@@ -6,7 +6,7 @@ group by upc order by sales_total desc limit1
 #方法2，可解决销售额一致的商品，但只返还其中一个商品的问题
 select upc,sales_total,row_number() over(order buy sales_total desc)as rank_id 
 from(
-select upc,sum(cast(sales as double))as sales_total from table_name 
-where data>=data_add('day',-7,now())group by upc)where rank_id=1
+select upc,sum(cast(sales as double))as sales_total 
+from table_name where data>=data_add('day',-7,now())group by upc)where rank_id=1
 
 #注意点:注意表字段的类型，是否是可加减的数值类型，日期是否是date类型，如果不是，需要用cast（xxx as xxx）,或者日期则可以用date（date）编程date格式
