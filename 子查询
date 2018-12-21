@@ -1,0 +1,15 @@
+/*子查询包括from与where子查询
+from子查询返回的是二维表，表子查询
+where后返回的是布尔值
+*/
+/* 输出销售额最高的商品编号（也可解决当有多条商品当前销售量总额一致时候的问题）*/
+select upc ,test2 from 
+(select  upc,sum(sales) as test2 from sales   group by  ) b
+where test2=
+(select sum(sales) as test  from sales   group by upc order by 1 desc limit 1)
+ #限定日期输出销售额最高的商品编号
+select date,upc ,test1 from
+(select date,upc,sum(sales) as test1 from sales group by 2 )a
+where test1=
+(select sum(sales) from sales group by upc order by 1  desc limit 1 )
+and date>adddate("2018-4-3",-20);
