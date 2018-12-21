@@ -1,0 +1,22 @@
+/*
+执行时机不同,where无法与合计函数一起使用，但是having可以
+where在检测数据时执行，对原数据过滤
+having对筛选出的结构再次过滤
+*/
+#当只做一次筛选时，where与having都可用，结果一样
+select id from table where id>3
+select id from table having id>3
+
+select id count(*) from table where id is not null group by id
+--select id count(*) from table where id is not null and count(*)>3 group by id 
+#错误用法，非法使用合计函数
+elect id count(*) from table where id is not null  group by id having count(*)>3 #先执行合计函数，再对结果执行having过滤
+
+select id as stu_id ,name from table where stu_id>3  #执行错误，因为where识别的是原数据
+select id as stu_id ,name from table having stu_id>3  #执行正确输出，having能识别别名
+
+#limit n，m 数据索引n开始返回m条数据，limit 1表示从0索引开始返回1条数据，当从0索引开始时，索引值n可以省略
+
+--只有出现合计函数，才有having的意义，除了额外支持合计函数外，where后的表达式都可以卸载having后
+
+--执行顺序：from->where->group by->计算合计函数->having->order by->limit->返回结果
