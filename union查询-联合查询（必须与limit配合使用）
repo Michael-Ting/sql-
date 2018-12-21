@@ -1,0 +1,11 @@
+#将多个查询结果联合到一起
+/*题目：输出一班与二班学生查询结果，其中一班学生按照money升序，二班学生按照money降序
+分开查询，用union将两部分查询连接在一起
+*/
+(select * from syudent where class_id=1 order by money desc limit 10) #因为有order by，需要加括号，否则会按照最后的order by排序
+union
+select * from student where class_id=2 order by asc limit 10;
+
+--union需要与limit结合使用，不然order by会被优化掉
+
+
