@@ -1,0 +1,32 @@
+题目（SQL代码实现）：
+1. 最近7天销售最高的商品
+2. 最近30天总的顾客数量和新增顾客的数量
+3. 2018年截至每个月月底，90天的顾客数，不满整月
+
+创建表格	create table if not exists `sales`(
+	`date` date default null,
+	`user_id`  int  default null,
+	`order_id`  int default null,
+	`sales`  int  default null,
+	`upc` int default null);
+  
+  导入csv格式的数据	load data local infile "F/sales.csv" into table `sales`  fields terminated by ',' enclosed by '"' lines terminated by '\r\n';
+1、	select upc  from sales  where date>ADDDATE(curdate(),-7)  group by upc order by sum(sales) desc limit 1 ;
+2、	
+顾客总数量	select count( distinct user_id) from sales where date>ADDDATE(curdate(),-30); 
+新增顾客的数量	select count(user_id) from sales where user_id not in (select distinct user_id from sales where date<adddate(curdate(),-30));
+--第三题未解
+3、	select date_format(month_end ,'%Y%m'),count(distinct user_id) from
+	(select a.*,
+	CONCAT(date_format(month_end ,'%Y%m') ,date_format(month_end_90 ,'%Y%m') ) as test
+	from 
+	(select date,user_id,order_id ,sales,upc,
+	(case when last_day(date)> current_date then current_date
+	else last_day(date) end) as month_end,
+	(case when last_day(date)> current_date then adddate(current_date,-90)
+	else adddate(last_day(date),-90) end) as month_end_90
+	 from 
+	sales) a) b
+	group by  date_format(month_end ,'%Y%m'),test
+	;
+
