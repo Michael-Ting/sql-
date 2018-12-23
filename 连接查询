@@ -1,0 +1,12 @@
+/*
+包括内连接 inner join
+交叉连接  cross join，与没有条件约束的内连接一致
+外链接：left jion与right jion，使存在不能被连接的数据也出现在结果内
+*/
+
+#连接条件用on，可以用where代替，但是当需要对连接的数据过滤时，连接条件用on，过滤用where最好
+#专门负责连接的using，需要两个表拥有同样的字段，会对结果做处理，所using的字段在结果中会合并成一个
+select * from t35 inner jion t36 using (id);
+
+--外链接  t37未与t36匹配的字段会自动用null输出
+select * from t36 left join t37 using(id);
