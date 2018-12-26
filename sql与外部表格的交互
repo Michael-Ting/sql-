@@ -1,0 +1,21 @@
+#################mysql表数据导出到本地
+select * from tablename into outfile "F:/sales.xls" #得到纯数据无字段表头的xls格式的文件
+select * from tablename into outfile"F：/sales.csv"  #将mysql字段分隔为 用逗号分隔（csv是以逗号分隔的文件）
+--错误示范select * from tablename into outfile"F：/sales.txt" ；输出的字段会成一行
+select * from tablename into outfile"F：/sales.txt" lines terminated by  '\r\n'; #每一行的终结是 回车符加换行符 ，遇到则换行
+select * from sales into outfile "F:/BEIJING.XLS" fields terminated by ',' lines terminated by '/r/n';#每个字段以,分隔，字段内容是字符串的以”包围，每条记录使用\r\n换行
+
+################本地文件上传mysql
+load data local infile "F/sales.csv" into table `sales`  fields terminated by ',' enclosed by '"' lines terminated by '\r\n';
+
+
+
+
+\n-----------------------换行符
+\t-----------------------tab字符
+\r-----------------------回车符
+\b-----------------------退格符
+FIELDS TERMINATED BY ---- 字段终止字符 csv为逗号，excle无需指定
+OPTIONALLY ENCLOSED BY ---- 封套符 
+LINES TERMINATED BY ---- 行终止符
+
