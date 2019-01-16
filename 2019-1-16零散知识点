@@ -1,0 +1,26 @@
+CONV(15,10,2)--讲数值15从10进制换成2进制数据系统
+--1----------------------------------------------
+partition by list(ftime) (partition default)
+--2----------------------------------------------
+#row_number/partition by/rn  https://blog.csdn.net/x2145637/article/details/53744199
+#https://www.jb51.net/article/75533.htm  关于row_number over()的用法例子
+SELECT T1.MAIN_ID,T1.TITLE FROM (
+SELECT T.MAIN_ID,T.TITLE,T.PUBLISH_DATE,row_number() over(partition by T.COLUMN_ID order by T.PUBLISH_DATE desc) rn FROM NP_CMS_MAIN T 
+WHERE
+ T.STATUS = 9 AND T.IS_ACTIVE=1 
+AND
+ CONTENT_TYPE<2  
+ AND (OVERDUE_DATE IS NULL or OVERDUE_DATE>='2016-12-16 11:30:00')
+ AND T.IS_ANON = 1
+) AS T1
+WHERE T1.rn = 1
+ORDER BY T1.PUBLISH_DATE DESC
+--3------------------- 
+#with as 也叫做子查询片段，可以优化数据量比较大的表，with a as (select * from b)括号里的查询叫公用表表达式（CTE），在后续的语句一定要使用
+#参考文章：https://blog.csdn.net/baidu_30527569/article/details/48680745
+--4---------------------------------------------------------------------------------------------------------------------------------
+#NVL函数是一个空值转换函数
+# NVL2(表达式1，表达式2，表达式3）
+#如果表达式1为空，返回值为表达式3的值。如果表达式1不为空，返回值为表达式2的值。
+NVL(tbl_position.fpname, '') as fposname #如果是空值，那就为空
+NVL(tbl_position.fpname, 0)#如果是空，返回0填充，也可以定义返回某字段
