@@ -1,0 +1,31 @@
+1、把聚合键之外的列名写在select字句，select语句会发生错误，如果是mysql则非聚合键的字段查询到的信息会对应表的第一个
+sql：
+select a,count（b）from sales group by b;--会执行错误提示a必须包含在group by字句中，或者必须在聚合函数内使用
+-----------------------------------------------------------------------------------------------------
+mysql：
+select a,b,count（b）from sales group by b;--能正常运行，但是a字段因为跟b不一定是一一对应的，假设是以下表，有a，b字段
+--a  b
+--1  桃子
+--2  苹果
+--4  桃子
+--4  苹果
+--5  雪梨
+那么会的得到以下结果
+a   b   count(b)
+1   桃子  2
+2   苹果  2
+5   雪梨  1
+
+2、在group by字句中不能写select字句中定义的别名，是不可以的，因为sql执行顺序是from->where->group by->select
+类似这种语句是错的
+select shohin_bunrui as sb,count(*)
+from shohin
+group by sb;
+
+3、group by 字句结果是无序的
+4、只有select字句与having字句（以及order by字句）中能使用聚合函数
+5、distinct与group by都能删除后续列重复的数据，而且会把null的数据作为一个独立的结果返回，比如聚合键中的a字段有空值情况，也会单独统计出来
+###########################################################################
+count(*)与count(字段)得到的结果是不一样的
+比如a字段有三行，都是空值，那count(*）与count(a)返回的结果分别是3与0
+所以要计算a的非空值行数，就要count（a）
